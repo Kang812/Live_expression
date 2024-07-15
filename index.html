@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image and Video Upload</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMzBpkEZ6gqq3gC7pW1sPYb9yy0JhxHkG6v2aK2" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            position: relative;
+        }
+
+        .menu-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #6C63FF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 2; /* Ensure it is above the menu */
+            transition: all 0.3s ease;
+        }
+
+        .menu-slide {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: left 0.3s ease;
+            z-index: 1; /* Ensure it is above other content but below the button */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-slide .close-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 3; /* Ensure it is above the menu */
+            transition: left 0.3s ease;
+        }
+
+        .menu-slide a {
+            padding: 20px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .menu-slide a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .upload-container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .upload-container h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .upload-container label {
+            display: block;
+            margin: 20px 0 10px;
+            font-weight: bold;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .upload-container input[type="file"] {
+            display: none;
+        }
+
+        .upload-container .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 2px solid #6C63FF;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #6C63FF;
+            transition: all 0.3s ease;
+        }
+
+        .upload-container .custom-file-upload:hover {
+            background-color: #6C63FF;
+            color: #fff;
+        }
+
+        .upload-container input[type="submit"] {
+            background-color: #6C63FF;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-container input[type="submit"]:hover {
+            background-color: #574b90;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-button" id="menuButton" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+    <div class="menu-slide" id="menuSlide">
+        <button class="close-button" id="closeButton" onclick="toggleMenu()"><i class="fas fa-times"></i></button>
+        <a href="#">Live_expression</a>
+        <a href="#">Coming Soon</a>
+        <a href="#">Coming Soon</a>
+        <a href="#">Coming Soon</a>
+        <a href="#">Coming Soon</a>
+    </div>
+    <div class="upload-container">
+        <h1>Live expression</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="imageUpload" class="custom-file-upload">
+                Upload Image
+            </label>
+            <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
+
+            <label for="videoUpload" class="custom-file-upload">
+                Upload Video
+            </label>
+            <input type="file" id="videoUpload" name="videoUpload" accept="video/*">
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menuSlide");
+            var menuButton = document.getElementById("menuButton");
+            var closeButton = document.getElementById("closeButton");
+
+            if (menu.style.left === "0px") {
+                menu.style.left = "-250px";
+                menuButton.style.display = "block";
+                closeButton.style.left = "20px";
+                closeButton.style.display = "none";
+            } else {
+                menu.style.left = "0px";
+                menuButton.style.display = "none";
+                closeButton.style.left = "270px"; // Move the close button to the right with the menu
+                closeButton.style.display = "block";
+            }
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            var menu = document.getElementById("menuSlide");
+            var menuButton = document.getElementById("menuButton");
+            var closeButton = document.getElementById("closeButton");
+
+            if (!event.target.matches('.menu-button') && !event.target.matches('.close-button')) {
+                if (menu.style.left === "0px") {
+                    menu.style.left = "-250px";
+                    menuButton.style.display = "block";
+                    closeButton.style.left = "20px";
+                    closeButton.style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
