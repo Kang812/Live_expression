@@ -137,7 +137,7 @@
     <button class="menu-button" id="menuButton" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
     <div class="menu-slide" id="menuSlide">
         <button class="close-button" id="closeButton" onclick="toggleMenu()"><i class="fas fa-times"></i></button>
-        <a href="#">Live_expression</a>
+        <a href="#" onclick="reloadPage()">Live Expression</a>
         <a href="#">Coming Soon</a>
         <a href="#">Coming Soon</a>
         <a href="#">Coming Soon</a>
@@ -177,6 +177,10 @@
                 closeButton.style.left = "270px"; // Move the close button to the right with the menu
                 closeButton.style.display = "block";
             }
+        }
+
+        function reloadPage() {
+            location.reload();
         }
 
         // Close the dropdown if the user clicks outside of it
