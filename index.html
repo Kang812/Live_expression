@@ -145,7 +145,7 @@
     </div>
     <div class="upload-container">
         <h1>Live expression</h1>
-        <form action="/upload" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" enctype="multipart/form-data">
             <label for="imageUpload" class="custom-file-upload">
                 Upload Image
             </label>
@@ -182,6 +182,29 @@
         function reloadPage() {
             location.reload();
         }
+
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            let formData = new FormData();
+            formData.append('image', document.getElementById('imageUpload').files[0]);
+            formData.append('video', document.getElementById('videoUpload').files[0]);
+            
+            let response = await fetch('http://localhost:8000/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                let blob = await response.blob();
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'result.mp4';
+                link.click();
+            } else {
+                console.error('Failed to upload files');
+            }
+        });
 
         // Close the dropdown if the user clicks outside of it
         window.onclick = function(event) {
