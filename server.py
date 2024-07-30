@@ -1,10 +1,12 @@
 from fastapi import FastAPI, File, UploadFile, Form
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import os.path as osp
 import uvicorn
 import sys
+from fastapi.staticfiles import StaticFiles
 sys.path.append("/workspace/Live_expression/LivePortrait/")
 from src.config.argument_config import ArgumentConfig
 from src.config.inference_config import InferenceConfig
@@ -30,6 +32,20 @@ def fast_check_args(args: ArgumentConfig):
         raise FileNotFoundError(f"driving info not found: {args.driving_info}")
 
 app = FastAPI()
+
+# CORS 설정
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 UPLOAD_DIR = "uploads"
 RESULT_DIR = "results"
@@ -87,5 +103,11 @@ async def upload_files(image: UploadFile = File(...),
 
     return FileResponse(path=result_path, filename=result_filename, media_type="video/mp4")
 
+@app.get("/", response_class=HTMLResponse)
+async def main():
+    with open("./index.html", "r") as file:
+        html_content = file.read()
+    return HTMLResponse(content=html_content)
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
