@@ -1,176 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload and Download</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.1/axios.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #74ebd5, #ACB6E5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+    <script>
+        function downloadFile(filename) {
+            fetch(`http://localhost:8000/results/${filename}`)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                });
         }
-        .upload-container {
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
+
+        function uploadFiles(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData();
+            formData.append("image", document.getElementById("imageUpload").files[0]);
+            formData.append("video", document.getElementById("videoUpload").files[0]);
+            formData.append("flag_eye_retargeting", document.getElementById("flag_eye_retargeting").checked);
+            formData.append("flag_lip_retargeting", document.getElementById("flag_lip_retargeting").checked);
+            formData.append("flag_stitching", document.getElementById("flag_stitching").checked);
+            formData.append("flag_relative_motion", document.getElementById("flag_relative_motion").checked);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                alert("File uploaded successfully!");
+                // Pass the result_filename to the download function
+                downloadFile(data.result_filename);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("File upload failed!");
+            });
         }
-        .upload-container h1 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        .upload-container label {
-            display: block;
-            margin: 20px 0 10px;
-            font-weight: bold;
-            color: #555;
-            font-size: 18px;
-        }
-        .upload-container input[type="file"] {
-            display: none;
-        }
-        .upload-container .custom-file-upload {
-            display: inline-block;
-            padding: 15px 25px;
-            cursor: pointer;
-            border: 2px solid #6C63FF;
-            border-radius: 10px;
-            background-color: #fff;
-            color: #6C63FF;
-            transition: all 0.3s ease;
-            font-size: 16px;
-        }
-        .upload-container .custom-file-upload:hover {
-            background-color: #6C63FF;
-            color: #fff;
-        }
-        .upload-container input[type="submit"],
-        .upload-container a {
-            background-color: #6C63FF;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 20px;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-            margin-right: 10px; /* Add margin between buttons */
-            text-decoration: none;
-            display: inline-block;
-        }
-        .upload-container input[type="submit"]:hover,
-        .upload-container a:hover {
-            background-color: #574b90;
-        }
-        .upload-container .checkbox-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 0;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .upload-container .checkbox-container:last-child {
-            border-bottom: none;
-        }
-        .upload-container .checkbox-container label {
-            margin: 0;
-            font-size: 16px;
-            color: #333;
-        }
-        .upload-container .checkbox-container input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
+    </script>
 </head>
 <body>
-    <div class="upload-container">
-        <h1>Live Portrait Animation</h1>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <label for="imageUpload" class="custom-file-upload">
-                <i class="fas fa-upload"></i> Upload Image
-            </label>
-            <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
-            <label for="videoUpload" class="custom-file-upload">
-                <i class="fas fa-upload"></i> Upload Video
-            </label>
-            <input type="file" id="videoUpload" name="videoUpload" accept="video/*">
-            <div class="checkbox-container">
-                <label for="flag_eye_retargeting">Eye Retargeting</label>
-                <input type="checkbox" id="flag_eye_retargeting" name="flag_eye_retargeting">
-            </div>
-            <div class="checkbox-container">
-                <label for="flag_lip_retargeting">Lip Retargeting</label>
-                <input type="checkbox" id="flag_lip_retargeting" name="flag_lip_retargeting">
-            </div>
-            <div class="checkbox-container">
-                <label for="flag_stitching">Stitching</label>
-                <input type="checkbox" id="flag_stitching" name="flag_stitching" checked>
-            </div>
-            <div class="checkbox-container">
-                <label for="flag_relative_motion">Relative Motion</label>
-                <input type="checkbox" id="flag_relative_motion" name="flag_relative_motion" checked>
-            </div>
-            <div class="button-group">
-                <input type="submit" value="Submit">
-                <a id="downloadButton">Download</a>
-            </div>
-        </form>
-    </div>
-    <script>
-        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            let formData = new FormData();
-            formData.append('image', document.getElementById('imageUpload').files[0]);
-            formData.append('video', document.getElementById('videoUpload').files[0]);
-            formData.append('flag_eye_retargeting', document.getElementById('flag_eye_retargeting').checked);
-            formData.append('flag_lip_retargeting', document.getElementById('flag_lip_retargeting').checked);
-            formData.append('flag_stitching', document.getElementById('flag_stitching').checked);
-            formData.append('flag_relative_motion', document.getElementById('flag_relative_motion').checked);
-            try {
-                const response = await fetch('http://localhost:8000/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const blob = await response.blob();
-                console.log('blob URL:', blob);
-                const url = window.URL.createObjectURL(blob);
-                const downloadButton = document.getElementById('downloadButton');
-                downloadButton.href = url;
-                downloadButton.download = 'result.mp4';
-                downloadButton.style.display = 'inline';
-                
-                // URL 정보 콘솔에 출력
-                //console.log('Download URL:', url);
-                
-                // URL을 페이지에 표시 (디버깅용)
-                const urlDisplay = document.createElement('p');
-                urlDisplay.textContent = `Download URL: ${url}`;
-                document.body.appendChild(urlDisplay);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
-    </script>
+    <h1>File Upload</h1>
+    <form id="uploadForm" onsubmit="uploadFiles(event)">
+        <input type="file" id="imageUpload" name="image" accept="image/*">
+        <input type="file" id="videoUpload" name="video" accept="video/*">
+        <label>
+            <input type="checkbox" id="flag_eye_retargeting"> Eye Retargeting
+        </label>
+        <label>
+            <input type="checkbox" id="flag_lip_retargeting"> Lip Retargeting
+        </label>
+        <label>
+            <input type="checkbox" id="flag_stitching" checked> Stitching
+        </label>
+        <label>
+            <input type="checkbox" id="flag_relative_motion" checked> Relative Motion
+        </label>
+        <button type="submit">Upload</button>
+    </form>
 </body>
 </html>
