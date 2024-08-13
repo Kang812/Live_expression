@@ -50,7 +50,7 @@ async def upload_files(image: UploadFile = File(...),
     video_path = os.path.join(UPLOAD_DIR, video.filename)
     result_path = os.path.join(RESULT_DIR, "result.mp4")
 
-    #print(flag_eye_retargeting)
+    print(type(flag_eye_retargeting))
     #print(flag_lip_retargeting)
     #print(flag_stitching)
     #print(flag_relative_motion)

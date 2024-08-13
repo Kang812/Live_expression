@@ -1,10 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload and Download</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #6A82FB, #FC5C7D);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 400px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 2px solid #fff;
+            border-radius: 25px;
+            background-color: transparent;
+            color: #fff;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #fff;
+            color: #6A82FB;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 25px;
+            background-color: #FC5C7D;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #6A82FB;
+        }
+
+        #loadingPopup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 999;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 10px;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+    </style>
     <script>
+        function showLoadingPopup() {
+            document.getElementById("loadingPopup").style.display = "block";
+        }
+
+        function hideLoadingPopup() {
+            document.getElementById("loadingPopup").style.display = "none";
+        }
+
         function downloadFile(filename) {
-            fetch(`http://localhost:8000/results/${filename}`)
+            fetch(`https://9175-183-99-30-152.ngrok-free.app/results/${filename}`)
                 .then(response => response.blob())
                 .then(blob => {
                     const url = window.URL.createObjectURL(blob);
@@ -14,11 +117,24 @@
                     document.body.appendChild(a);
                     a.click();
                     a.remove();
+
+                    // Hide the loading popup after download completes
+                    hideLoadingPopup();
+                })
+                .catch(error => {
+                    console.error("Error during download:", error);
+                    alert("Failed to download the file!");
+
+                    // Hide the loading popup in case of error
+                    hideLoadingPopup();
                 });
         }
 
         function uploadFiles(event) {
             event.preventDefault(); // Prevent the default form submission
+
+            // Show the loading popup
+            showLoadingPopup();
 
             const formData = new FormData();
             formData.append("image", document.getElementById("imageUpload").files[0]);
@@ -42,28 +158,42 @@
             .catch((error) => {
                 console.error("Error:", error);
                 alert("File upload failed!");
+
+                // Hide the loading popup in case of error
+                hideLoadingPopup();
             });
         }
     </script>
 </head>
 <body>
-    <h1>File Upload</h1>
-    <form id="uploadForm" onsubmit="uploadFiles(event)">
-        <input type="file" id="imageUpload" name="image" accept="image/*">
-        <input type="file" id="videoUpload" name="video" accept="video/*">
-        <label>
-            <input type="checkbox" id="flag_eye_retargeting"> Eye Retargeting
-        </label>
-        <label>
-            <input type="checkbox" id="flag_lip_retargeting"> Lip Retargeting
-        </label>
-        <label>
-            <input type="checkbox" id="flag_stitching" checked> Stitching
-        </label>
-        <label>
-            <input type="checkbox" id="flag_relative_motion" checked> Relative Motion
-        </label>
-        <button type="submit">Upload</button>
-    </form>
+    <div class="container">
+        <h1>File Upload</h1>
+        <form id="uploadForm" onsubmit="uploadFiles(event)">
+            <label class="custom-file-upload">
+                <input type="file" id="imageUpload" name="image" accept="image/*">
+                Upload Image
+            </label>
+            <label class="custom-file-upload">
+                <input type="file" id="videoUpload" name="video" accept="video/*">
+                Upload Video
+            </label>
+            <label>
+                <input type="checkbox" id="flag_eye_retargeting"> Eye Retargeting
+            </label>
+            <label>
+                <input type="checkbox" id="flag_lip_retargeting"> Lip Retargeting
+            </label>
+            <label>
+                <input type="checkbox" id="flag_stitching" checked> Stitching
+            </label>
+            <label>
+                <input type="checkbox" id="flag_relative_motion" checked> Relative Motion
+            </label>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+
+    <!-- Loading Popup -->
+    <div id="loadingPopup">Please be patient, it will download shortly.</div>
 </body>
 </html>
