@@ -1,4 +1,6 @@
 import streamlit as st
+import requests
+import os
 
 with st.sidebar:
     st.subheader("PreSets")
@@ -45,13 +47,23 @@ with st.sidebar:
     button = st.button("Summit", type = 'primary')
 
 if button:
+    data = {
+            "flag_eye_retargeting": eye_option,
+            "flag_lip_retargeting": lip_option,
+            "flag_stitching": stitching_option,
+            "flag_relative_motion": relative_motion_option,}
     
-    if uploaded_image_file is not None:
-        with open(f"/workspace/Live_expression/uploads/{uploaded_image_file.name}", "wb") as f:
-            f.write(uploaded_image_file.getbuffer())
+    files = {
+            "image": (uploaded_image_file.name, uploaded_image_file, uploaded_image_file.type),
+            "video": (uploaded_video_file.name, uploaded_video_file, uploaded_video_file.type),
+        }
     
-    if uploaded_video_file is not None:
-        with open(f"/workspace/Live_expression/uploads/{uploaded_video_file.name}", "wb") as f:
-            f.write(uploaded_video_file.getbuffer())
+    
+    response = requests.post("http://127.0.0.1:8000/upload", files=files, data=data)
+    result = response.json()
+    result_filename = result['result_filename']
+    
+    video_file = open(os.path.join("/workspace/Live_expression/results/", uploaded_image_file.name.replace(".jpg", "").replace(".png", "") + "--" + uploaded_video_file.name), "rb")
+    video_bytes = video_file.read()
 
-    st.video(uploaded_video_file)
+    st.video(video_bytes)
