@@ -44,11 +44,25 @@ with st.sidebar:
     else:
         relative_motion_option = False
     
-    button = st.button("Summit", type = 'primary')
+    st.markdown("")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("")
+    
+    with col2:
+        st.markdown("")
+        #button = st.button("Summit", type = 'primary')
+    
+    with col3:
+        button = st.button("Summit", type = 'primary')
+    
+    #st.page_link("/workspace/Live_expression/pages/guide.py", label= 'guide page')
+        
 
 if button:
     data = {
-            "flag_eye_retargeting": eye_option,
+            "flag_eye_retargeting": eye_option, 
             "flag_lip_retargeting": lip_option,
             "flag_stitching": stitching_option,
             "flag_relative_motion": relative_motion_option,}
