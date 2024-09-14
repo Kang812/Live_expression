@@ -32,7 +32,7 @@ streamlit home.py
 ![image](./readme_img/upload.png)
 
 # LivePortrait option and summit
-- Configure the model parameters, then press the Submit button to process the video.
+- Configure the model parameters, then press the Submit button to process the video.<br>
 ![image](./readme_img/option.png)
 - Setting the parameter and Press the Submit button
 
