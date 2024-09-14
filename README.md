@@ -1,8 +1,15 @@
 # Live_expression
+This project enables live expression modeling with Streamlit and FastAPI integration. For further details about the model checkpoints and LivePortrait, visit the original repository [here](https://github.com/KwaiVGI/LivePortrait).
 
-# install
-- For the parts related to model checkpoints and LivePortrait, see here. : [link](https://github.com/KwaiVGI/LivePortrait)
-- install library
+# Installation
+Ensure you have the following versions installed:
+- Python: 3.10
+- PyTorch: 2.3.0
+- Streamlit: 1.38.0
+- FastAPI: 0.111.1
+
+Install Required Libraries
+To install the necessary libraries, run the following command:
 ```
 pip install -r requirement.txt
 ```
@@ -28,3 +35,8 @@ streamlit home.py
 
 # Result video
 [Video Title](./results/sample_img--singer_singing_woman_concat.mp4)
+
+
+# Notes
+- This project utilizes Streamlit for the front-end interface and FastAPI for backend processing.
+- Make sure to have compatible versions of the necessary libraries installed to avoid issues.
