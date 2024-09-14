@@ -8,7 +8,7 @@ Ensure you have the following versions installed:
 - Streamlit: 1.38.0
 - FastAPI: 0.111.1
 
-Install Required Libraries
+## Install Required Libraries
 To install the necessary libraries, run the following command:
 ```
 pip install -r requirement.txt
@@ -16,11 +16,12 @@ pip install -r requirement.txt
 
 # How to run
 - Two terminals are required: one to load the server and one to run streamlit.
+## Terminal 1: Start FastAPI Server
 ```
 # Terminal 1
 python server.py
 ```
-
+## Terminal 2: Run Streamlit App
 ```
 # Terminal 2
 streamlit home.py
