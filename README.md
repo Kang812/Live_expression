@@ -28,13 +28,16 @@ streamlit home.py
 ```
 
 # image and video upload
+- You can upload your images and videos using the interface below:
 ![image](./readme_img/upload.png)
 
 # LivePortrait option and summit
+- Configure the model parameters, then press the Submit button to process the video.
 ![image](./readme_img/option.png)
 - Setting the parameter and Press the Submit button
 
 # Result video
+- Click the link below to view the result:
 [Video Title](./results/sample_img--singer_singing_woman_concat.mp4)
 
 
