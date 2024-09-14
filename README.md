@@ -38,7 +38,7 @@ streamlit home.py
 
 # Result video
 - Click the link below to view the result:
-[Video Title](./results/sample_img--singer_singing_woman_concat.mp4)
+[Video](./results/sample_img--singer_singing_woman_concat.mp4)
 
 
 # Notes
