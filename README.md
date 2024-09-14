@@ -1,2 +1,4 @@
 # Live_expression
-서비스 개발 사이드 프로젝트
+
+# install
+- model 체크포인트 및 LivePortrait과 관련된 부분은 여기에 참고해주세요. : link[https://github.com/KwaiVGI/LivePortrait]

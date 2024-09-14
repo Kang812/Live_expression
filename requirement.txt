@@ -1,0 +1,8 @@
+--index-url https://download.pytorch.org/whl/cu118
+torch==2.3.0
+--index-url https://download.pytorch.org/whl/cu118
+torchvision==0.18.0
+--index-url https://download.pytorch.org/whl/cu118
+torchaudio==2.3.0
+fastapi==0.111.1
+streamlit==1.38.0

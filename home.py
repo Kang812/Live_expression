@@ -44,6 +44,15 @@ with st.sidebar:
     else:
         relative_motion_option = False
     
+    flag_crop_driving_video_option = st.selectbox(
+        "flag_crop_driving_video ?",
+        ("True", "False"),)
+    
+    if flag_crop_driving_video_option == 'True':
+        flag_crop_driving_video_option = True
+    else:
+        flag_crop_driving_video_option = False
+    
     st.markdown("")
     col1, col2, col3 = st.columns(3)
 
@@ -65,17 +74,18 @@ if button:
             "flag_eye_retargeting": eye_option, 
             "flag_lip_retargeting": lip_option,
             "flag_stitching": stitching_option,
-            "flag_relative_motion": relative_motion_option,}
+            "flag_relative_motion": relative_motion_option,
+            "flag_crop_driving_video" : flag_crop_driving_video_option,}
     
     files = {
             "image": (uploaded_image_file.name, uploaded_image_file, uploaded_image_file.type),
             "video": (uploaded_video_file.name, uploaded_video_file, uploaded_video_file.type),
         }
     
-    
-    response = requests.post("http://127.0.0.1:8000/upload", files=files, data=data)
-    result = response.json()
-    result_filename = result['result_filename']
+    with st.spinner("You're creating a video ..."):
+        response = requests.post("http://127.0.0.1:8000/upload", files=files, data=data)
+        result = response.json()
+        result_filename = result['result_filename']
     
     video_file = open(os.path.join("/workspace/Live_expression/results/", uploaded_image_file.name.replace(".jpg", "").replace(".png", "") + "--" + uploaded_video_file.name), "rb")
     video_bytes = video_file.read()

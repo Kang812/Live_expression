@@ -41,6 +41,7 @@ os.makedirs(RESULT_DIR, exist_ok=True)
 @app.post("/upload")
 async def upload_files(image: UploadFile = File(...), 
                        video: UploadFile = File(...),
+                       flag_crop_driving_video: bool = Form(False),
                        flag_eye_retargeting: bool = Form(False),
                        flag_lip_retargeting: bool = Form(False),
                        flag_stitching: bool = Form(True),
@@ -70,6 +71,7 @@ async def upload_files(image: UploadFile = File(...),
     args.flag_lip_retargeting = flag_lip_retargeting
     args.flag_stitching = flag_stitching
     args.flag_relative_motion = flag_relative_motion
+    args.flag_crop_driving_video = flag_crop_driving_video
 
     # specify configs for inference
     inference_cfg = partial_fields(InferenceConfig, args.__dict__)
